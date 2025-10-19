@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro de Tickets</title>
+  <style>
+    /* Reset y base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #e9f0f7;
+      margin: 0;
+      padding: 1.5rem 1rem;
+      color: #2c3e50;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h2 {
+      font-weight: 700;
+      color: #34495e;
+      margin-bottom: 1rem;
+      letter-spacing: 1.2px;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      display: block;
+      font-size: 1rem;
+      color: #34495e;
+    }
+    input[type="text"] {
+      width: 100%;
+      max-width: 320px;
+      padding: 0.5rem 0.75rem;
+      border: 2px solid #bdc3c7;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      margin-bottom: 1.2rem;
+    }
+    select {
+      width: 100%;
+      max-width: 320px;
+      padding: 0.5rem 0.75rem;
+      border: 2px solid #bdc3c7;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      margin-bottom: 1.2rem;
+      background: white;
+      color: #2c3e50;
+    }
+    input[type="text"]:focus {
+      border-color: #2980b9;
+      outline: none;
+      box-shadow: 0 0 6px #2980b9aa;
+    }
+    #productos {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgb(0 0 0 / 0.1);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    .producto {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #ecf0f1;
+      font-size: 1.05rem;
+    }
+    .producto:last-child {
+      border-bottom: none;
+    }
+    .separador {
+      font-weight: 700;
+      color: #1c5a8a;
+      padding: 0.5rem 0;
+      margin: 0.4rem 0;
+      border-bottom: 1px dashed #ecf0f1;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+    .producto label {
+      flex-grow: 1;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #34495e;
+    }
+    .producto input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #2980b9;
+      border-radius: 4px;
+    }
+    .cantidad-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 110px;
+      justify-content: flex-end;
+    }
+    .cantidad-controls button {
+      background: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    .cantidad-controls button:hover {
+      background: #1c5980;
+    }
+    .cantidad-controls span {
+      min-width: 24px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #2c3e50;
+      user-select: none;
+    }
+    .total {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #2980b9;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      user-select: none;
+    }
+    .confirmar {
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 2rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgb(39 174 96 / 0.5);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      display: block;
+      margin: 0 auto 1rem auto;
+      max-width: 200px;
+      width: 100%;
+    }
+    .confirmar:hover {
+      background-color: #1e8746;
+      box-shadow: 0 8px 18px rgb(30 135 70 / 0.7);
+    }
+    #descargarExcel {
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 2rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgb(41 128 185 / 0.6);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      display: block;
+      margin: 0 auto 2rem auto;
+      max-width: 200px;
+      width: 100%;
+    }
+    #descargarExcel:hover {
+      background-color: #1c5a8a;
+      box-shadow: 0 8px 18px rgb(28 90 138 / 0.8);
+    }
+    .resumen, .historial {
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgb(0 0 0 / 0.1);
+      padding: 1.2rem 1.5rem;
+      font-family: monospace;
+      color: #34495e;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 1.5rem;
+      user-select: text;
+    }
+    .resumen h3, .historial h3 {
+      margin-top: 0;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #2c3e50;
+      margin-bottom: 0.8rem;
+    }
+
+    @media (max-width: 520px) {
+      #productos, .resumen, .historial {
+        max-width: 100%;
+        padding: 1rem;
+      }
+      input[type="text"] {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Registro de Tickets</h2>
+  <label for="nombreEstudiante">Nombre del estudiante:</label>
+  <input type="text" id="nombreEstudiante" placeholder="Nombre del estudiante" />
+
+  <label for="cursoEstudiante">Curso:</label>
+  <select id="cursoEstudiante" aria-label="Curso del estudiante">
+    <option value="">Selecciona curso</option>
+    <optgroup label="Primaria">
+      <option value="1ero de primaria">1ero de primaria</option>
+      <option value="2do de primaria">2do de primaria</option>
+      <option value="3ro de primaria">3ro de primaria</option>
+      <option value="4to de primaria">4to de primaria</option>
+      <option value="5to de primaria">5to de primaria</option>
+      <option value="6to de primaria">6to de primaria</option>
+    </optgroup>
+    <optgroup label="Secundaria">
+      <option value="1ero de secundaria">1ero de secundaria</option>
+      <option value="2do de secundaria">2do de secundaria</option>
+      <option value="3ro de secundaria">3ro de secundaria</option>
+      <option value="4to de secundaria">4to de secundaria</option>
+      <option value="5to de secundaria">5to de secundaria</option>
+      <option value="6to de secundaria">6to de secundaria</option>
+      <option value="Profesor(a)">Profesor(a)</option>
+    </optgroup>
+  </select>
+
+  <label for="cajaSelect">Caja:</label>
+  <select id="cajaSelect" aria-label="Selecciona la caja">
+    <option value="">Selecciona caja</option>
+    <option value="Caja 1">Caja 1</option>
+    <option value="Caja 2">Caja 2</option>
+    <option value="Caja 3">Caja 3</option>
+    <option value="Caja 4">Caja 4</option>
+  </select>
+
+  <div id="productos"></div>
+
+  <div class="total">Total: RD$<span id="total">0</span></div>
+
+  <button class="confirmar" onclick="guardarCompra()">Confirmar compra</button>
+
+  <div class="resumen">
+    <h3>Resumen de la compra</h3>
+    <pre id="resumen">Aún no se ha realizado ninguna compra.</pre>
+  </div>
+
+  <div class="historial">
+    <h3>Historial</h3>
+    <pre id="historial">No hay registros aún.</pre>
+  </div>
+
+  <!-- Librería SheetJS para Excel -->
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+  <script>
+    const productos = [
+      { nombre: "Pizza", precio: 75 },
+      { nombre: "Nachos", precio: 100 },
+      { nombre: "Pastelitos", precio: 40 },
+      { nombre: "Croquetas", precio: 40 },
+      { nombre: "Taqueritos", precio: 30 },
+      { nombre: "Palomitas", precio: 35 },
+      { nombre: "Refresco", precio: 50 },
+      { nombre: "Jugo", precio: 35 },
+      { nombre: "Algodón", precio: 35 },
+      { nombre: "Donas", precio: 50 },
+      { nombre: "Galleta glaseada", precio: 100 },
+      { nombre: "Lengüita", precio: 15 },
+      { nombre: "Chocolate", precio: 20 },
+      { nombre: "Gomitas", precio: 15 },
+      { nombre: "Ice pops", precio: 25 },
+      { nombre: "Húndelo en el mar", precio: 100 },
+      { nombre: "Encuentra el tesoro", precio: 35 },
+      { nombre: "Juego de memoria", precio: 25 },
+      { nombre: "Carrera de botes", precio: 30 },
+      { nombre: "Vete de Pesca", precio: 25 },
+      { nombre: "Just dance", precio: 30 },
+      { nombre: "Decora tu slime", precio: 125 },
+      { nombre: "Tiro al pulpo", precio: 25 },
+      { nombre: "Pinta carita", precio: 30 },
+      { nombre: "Inflables", precio: 50 },
+      { nombre: "Videojuegos", precio: 35 },
+      { nombre: "Simulador", precio: 60 },
+      { nombre: "Realidad virtual", precio: 100 },
+      { nombre: "Polaroid", precio: 100 },
+      { nombre: "Foto digital", precio: 60 },
+      { nombre: "VIP", precio: 100 }
+    ];
+
+    let compra = [];
+    let historial = [];
+
+    const productosDiv = document.getElementById('productos');
+    const totalSpan = document.getElementById('total');
+    const resumenPre = document.getElementById('resumen');
+    const historialPre = document.getElementById('historial');
+
+    function crearProductoHTML(producto, index) {
+      const div = document.createElement('div');
+      div.className = 'producto';
+
+      const label = document.createElement('label');
+      label.htmlFor = `producto-${index}`;
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `producto-${index}`;
+      checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          agregarProducto(index);
+        } else {
+          eliminarProducto(index);
+        }
+      });
+
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(producto.nombre + ` (RD$${producto.precio})`));
+      div.appendChild(label);
+
+      const controls = document.createElement('div');
+      controls.className = 'cantidad-controls';
+
+      const btnMenos = document.createElement('button');
+      btnMenos.type = 'button';
+      btnMenos.textContent = '-';
+      btnMenos.addEventListener('click', () => {
+        disminuirCantidad(index);
+      });
+
+      const cantidadSpan = document.createElement('span');
+      cantidadSpan.id = `cantidad-${index}`;
+      cantidadSpan.textContent = '0';
+
+      const btnMas = document.createElement('button');
+      btnMas.type = 'button';
+      btnMas.textContent = '+';
+      btnMas.addEventListener('click', () => {
+        aumentarCantidad(index);
+      });
+
+      controls.appendChild(btnMenos);
+      controls.appendChild(cantidadSpan);
+      controls.appendChild(btnMas);
+
+      div.appendChild(controls);
+
+      return div;
+    }
+
+    function renderProductos() {
+      productosDiv.innerHTML = '';
+      // Actividades empiezan desde "Húndelo en el mar" (índice 15)
+      const firstActivityIndex = productos.findIndex(p => p.nombre === 'Húndelo en el mar');
+      const actividadStart = firstActivityIndex >= 0 ? firstActivityIndex : productos.length;
+
+      // Añadir separador de comidas al inicio
+      productosDiv.appendChild(crearSeparador('Comidas'));
+
+      productos.forEach((prod, idx) => {
+        // Cuando lleguemos al inicio de actividades, insertar separador
+        if (idx === actividadStart) {
+          productosDiv.appendChild(crearSeparador('Actividades'));
+        }
+        const prodHTML = crearProductoHTML(prod, idx);
+        productosDiv.appendChild(prodHTML);
+      });
+    }
+
+    function crearSeparador(titulo) {
+      const div = document.createElement('div');
+      div.className = 'separador';
+      div.textContent = titulo;
+      return div;
+    }
+
+    function agregarProducto(index) {
+      if (!compra[index]) {
+        compra[index] = 1;
+      }
+      actualizarCantidadHTML(index);
+      actualizarTotal();
+    }
+
+    function eliminarProducto(index) {
+      compra[index] = 0;
+      actualizarCantidadHTML(index);
+      actualizarTotal();
+      const checkbox = document.getElementById(`producto-${index}`);
+      if (checkbox) checkbox.checked = false;
+    }
+
+    function aumentarCantidad(index) {
+      if (!compra[index]) {
+        compra[index] = 1;
+        const checkbox = document.getElementById(`producto-${index}`);
+        if (checkbox) checkbox.checked = true;
+      } else {
+        compra[index]++;
+      }
+      actualizarCantidadHTML(index);
+      actualizarTotal();
+    }
+
+    function disminuirCantidad(index) {
+      if (compra[index] && compra[index] > 1) {
+        compra[index]--;
+      } else {
+        compra[index] = 0;
+        const checkbox = document.getElementById(`producto-${index}`);
+        if (checkbox) checkbox.checked = false;
+      }
+      actualizarCantidadHTML(index);
+      actualizarTotal();
+    }
+
+    function actualizarCantidadHTML(index) {
+      const cantidadSpan = document.getElementById(`cantidad-${index}`);
+      if (cantidadSpan) {
+        cantidadSpan.textContent = compra[index] || 0;
+      }
+    }
+
+    function actualizarTotal() {
+      let total = 0;
+      compra.forEach((cant, i) => {
+        if (cant) total += cant * productos[i].precio;
+      });
+      totalSpan.textContent = total;
+    }
+
+    function guardarCompra() {
+      const nombre = document.getElementById('nombreEstudiante').value.trim();
+      const curso = document.getElementById('cursoEstudiante').value.trim();
+      const caja = document.getElementById('cajaSelect') ? document.getElementById('cajaSelect').value : '';
+
+      if (!nombre || !curso) {
+        alert('Por favor, ingresa el nombre del estudiante y el curso.');
+        return;
+      }
+
+      if (!caja) {
+        alert('Por favor, selecciona la caja antes de confirmar la compra.');
+        return;
+      }
+
+      // Actividades empiezan desde "Húndelo en el mar" (índice 15)
+      const firstActivityIndex = productos.findIndex(p => p.nombre === 'Húndelo en el mar');
+      const actividadStart = firstActivityIndex >= 0 ? firstActivityIndex : productos.length;
+
+      const itemsComprados = compra
+        .map((cantidad, i) => {
+          return {
+            cantidad,
+            producto: productos[i],
+            index: i,
+            isActividad: i >= actividadStart
+          };
+        })
+        .filter(item => item.cantidad > 0);
+
+      if (itemsComprados.length === 0) {
+        alert('Por favor, selecciona al menos un producto con cantidad mayor que 0.');
+        return;
+      }
+
+      let resumenTexto = `Estudiante: ${nombre}\nCurso: ${curso}\nProductos:\n`;
+      let total = 0;
+      itemsComprados.forEach(({ cantidad, producto }) => {
+        resumenTexto += `- ${producto.nombre} x ${cantidad} = RD$${cantidad * producto.precio}\n`;
+        total += cantidad * producto.precio;
+      });
+      resumenTexto += `\nTotal a pagar: RD$${total}`;
+
+      resumenPre.textContent = resumenTexto;
+
+      const registro = {
+        nombre,
+        curso,
+        items: itemsComprados,
+        total,
+        caja,
+        txId: `${Date.now()}-${Math.random().toString(36).slice(2,9)}`
+      };
+
+      historial.push(registro);
+
+      actualizarHistorial();
+
+      // Enviar a Google Sheets
+      enviarRegistroAGoogleSheet(registro);
+
+      // Reiniciar selección (conservar la caja seleccionada)
+      compra = [];
+      renderProductos();
+      actualizarTotal();
+      document.getElementById('nombreEstudiante').value = '';
+      document.getElementById('cursoEstudiante').value = '';
+      // NOTA: no limpiamos document.getElementById('cajaSelect') para mantener la caja entre ventas
+    }
+
+    function actualizarHistorial() {
+      if (historial.length === 0) {
+        historialPre.textContent = 'No hay registros aún.';
+        return;
+      }
+      let texto = '';
+      historial.forEach((registro, i) => {
+        texto += `Compra #${i + 1}\nProductos:\n`;
+        registro.items.forEach(({ cantidad, producto }) => {
+          texto += `- ${producto.nombre} x ${cantidad} = RD$${cantidad * producto.precio}\n`;
+        });
+        texto += `Total a pagar: RD$${registro.total}\n\n-----------------------\n\n`;
+      });
+      historialPre.textContent = texto;
+    }
+
+    function enviarRegistroAGoogleSheet(registro) {
+      const url = 'https://script.google.com/macros/s/AKfycbw5jPMsOYqHPAglAhG-2jD1O9OGMdeXsZ8H0TRZSI1dEFPZuay_jxaGcR0qay0fvttZvg/exec';
+      console.log('Enviando registro a', url, registro);
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ registro })
+      }).then(() => {
+        console.log('Registro enviado (modo no-cors, no se puede leer la respuesta).');
+      }).catch(err => {
+        console.log('Error al enviar registro:', err);
+      });
+    }
+
+    renderProductos();
+  </script>
+</body>
+</html>
